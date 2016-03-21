@@ -69,11 +69,7 @@ public class SetManagedBy extends GcpAppMojo {
       flags.put(Option.INSTANCE, instance);
     }
 
-    try {
-      this.action = new SetManagedByAction(modules, version, manager, flags);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+    action = new SetManagedByAction(modules, version, manager, flags);
 
     this.executeAction();
   }

@@ -58,6 +58,8 @@ public class SdkResolver {
   private static final String SDK_GROUP_ID = "com.google.appengine";
   private static final String SDK_ARTIFACT_ID = "appengine-java-sdk";
   private static final String SDK_EXTENSION = "zip";
+  private static final String APP_MAVEN_PLUGIN_NAME = "gcp-app-maven-plugin";
+  private static final String APP_ENGINE_SDK_VERSION = "1.9.34";
 
   public static File getSdk(MavenProject project, RepositorySystem repoSystem,
       RepositorySystemSession repoSession, List<RemoteRepository>... repos)
@@ -65,7 +67,7 @@ public class SdkResolver {
     Artifact artifact = (Artifact) find(project.getPluginArtifacts(), new Predicate<Artifact>() {
       @Override
       public boolean apply(Artifact artifact1) {
-        return artifact1.getArtifactId().equals("gcp-app-maven-plugin");
+        return artifact1.getArtifactId().equals(APP_MAVEN_PLUGIN_NAME);
       }
     });
 
@@ -76,7 +78,7 @@ public class SdkResolver {
       return getSdk(newestVersion, repoSystem, repoSession, repos);
     }
 
-    return getSdk("1.9.32", repoSystem, repoSession, repos);
+    return getSdk(APP_ENGINE_SDK_VERSION, repoSystem, repoSession, repos);
   }
 
   private static String determineNewestVersion(RepositorySystem repoSystem,

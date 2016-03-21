@@ -15,6 +15,7 @@
  */
 package com.google.cloud.tools.maven.configs;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -34,7 +35,9 @@ public abstract class Config {
 
   protected Boolean getBooleanFromMap(String key, Map<Object, Object> map) {
     if (map.containsKey(key)) {
-      if (map.get(key) == null || String.valueOf(map.get(key)).toLowerCase().equals("true")) {
+      if (map.get(key) == null
+          || String.valueOf(map.get(key)).toLowerCase(Locale.ENGLISH)
+          .equals("true".toLowerCase(Locale.ENGLISH))) {
         return true;
       } else {
         return false;

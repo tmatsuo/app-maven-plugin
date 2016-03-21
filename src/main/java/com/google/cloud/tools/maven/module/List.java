@@ -43,11 +43,7 @@ public class List extends GcpAppMojo {
 
     // TODO(joaomartins): On no module provided by the user, this will be set to "default", whereas
     // we want to list every module.
-    try {
-      this.action = new ListAction(modules, flags);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+    action = new ListAction(modules, flags);
 
     this.executeAction();
   }

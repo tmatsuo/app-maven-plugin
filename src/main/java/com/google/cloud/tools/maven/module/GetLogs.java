@@ -57,13 +57,9 @@ public class GetLogs extends GcpAppMojo {
           + "the pom.xml file or with the -Dgcp.app.version flag.");
     }
 
-    getLog().info(String.format("Logs will be saved at %s", logFileLocation));
+    getLog().info("Logs will be saved at " + logFileLocation);
 
-    try {
-      this.action = new GetLogsAction(modules, version, logFileLocation, getFlags());
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+    action = new GetLogsAction(modules, version, logFileLocation, getFlags());
 
     this.executeAction();
   }

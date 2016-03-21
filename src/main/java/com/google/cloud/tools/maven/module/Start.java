@@ -44,11 +44,7 @@ public class Start extends GcpAppMojo {
       flags.put(Option.SERVER, server);
     }
 
-    try {
-      this.action = new StartAction(modules, version, flags);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+    action = new StartAction(modules, version, flags);
 
     this.executeAction();
   }

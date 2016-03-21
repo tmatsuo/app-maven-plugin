@@ -41,11 +41,11 @@ public class GenConfig extends GcpAppMojo {
     Map<Option, String> flags = new HashMap<>();
 
     try {
-      this.action = new GenConfigAction(sourceDirectory, flags);
+      action = new GenConfigAction(sourceDirectory, flags);
+
+      this.executeAction();
     } catch (InvalidFlagException ife) {
       throw new MojoExecutionException(ife.getMessage(), ife);
     }
-
-    this.executeAction();
   }
 }

@@ -44,11 +44,7 @@ public class SetDefault extends GcpAppMojo {
       flags.put(Option.SERVER, server);
     }
 
-    try {
-      this.action = new SetDefaultAction(modules, version, flags);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+    action = new SetDefaultAction(modules, version, flags);
 
     this.executeAction();
   }

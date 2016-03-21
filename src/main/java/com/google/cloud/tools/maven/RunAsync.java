@@ -29,11 +29,11 @@ public class RunAsync extends GcpAppRunMojo {
 
   public void execute() throws MojoExecutionException {
     try {
-      this.action = new RunAction(appYaml, false, getFlags());
+      action = new RunAction(appYaml, false, getFlags());
+
+      this.executeAction();
     } catch (InvalidFlagException ife) {
       throw new MojoExecutionException(ife.getMessage(), ife);
     }
-
-    this.executeAction();
   }
 }

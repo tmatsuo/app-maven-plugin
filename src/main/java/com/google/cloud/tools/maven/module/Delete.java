@@ -43,7 +43,7 @@ public class Delete extends GcpAppMojo {
       flags.put(Option.SERVER, server);
     }
 
-    this.action = new DeleteAction(modules, version, flags);
+    action = new DeleteAction(modules, version, flags);
 
     this.executeAction();
   }

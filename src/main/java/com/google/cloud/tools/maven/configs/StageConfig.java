@@ -22,18 +22,18 @@ import java.util.Properties;
  */
 public class StageConfig extends Config {
 
-  private static String ENABLE_QUICKSTART_KEY = "gcp-app.enable-quickstart";
-  private static String DISABLE_UPDATE_CHECK_KEY = "gcp-app.disable-update-check";
-  private static String VERSION_KEY = "gcp-app.version";
-  private static String GCLOUD_PROJECT_KEY = "gcp-app.project";
-  private static String ENABLE_JAR_SPLITTING_KEY = "gcp-app.enable-jar-splitting";
-  private static String JAR_SPLITTING_EXCLUDES_KEY = "gcp-app.jar-splitting-excludes";
-  private static String RETAIN_UPLOAD_DIR_KEY = "gcp-app.retain-upload-dir";
-  private static String COMPILE_ENCODING_KEY = "gcp-app.compile-encoding-key";
-  private static String FORCE_KEY = "gcp-app.force";
-  private static String DELETE_JSPS_KEY = "gcp-app.delete-jsps";
-  private static String ENABLE_JAR_CLASSES_KEY = "gcp-app.enable-jar-classes";
-  private static String RUNTIME_KEY = "gcp-app.runtime";
+  private static String ENABLE_QUICKSTART_KEY = "gcp.app.stage.enable-quickstart";
+  private static String DISABLE_UPDATE_CHECK_KEY = "gcp.app.stage.disable-update-check";
+  private static String VERSION_KEY = "gcp.app.stage.version";
+  private static String GCLOUD_PROJECT_KEY = "gcp.app.stage.project";
+  private static String ENABLE_JAR_SPLITTING_KEY = "gcp.app.stage.enable-jar-splitting";
+  private static String JAR_SPLITTING_EXCLUDES_KEY = "gcp.app.stage.jar-splitting-excludes";
+  private static String RETAIN_UPLOAD_DIR_KEY = "gcp.app.stage.retain-upload-dir";
+  private static String COMPILE_ENCODING_KEY = "gcp.app.stage.compile-encoding-key";
+  private static String FORCE_KEY = "gcp.app.stage.force";
+  private static String DELETE_JSPS_KEY = "gcp.app.stage.delete-jsps";
+  private static String ENABLE_JAR_CLASSES_KEY = "gcp.app.stage.enable-jar-classes";
+  private static String RUNTIME_KEY = "gcp.app.stage.runtime";
 
   public Boolean enableQuickstart;
   public Boolean disableUpdateCheck;

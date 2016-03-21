@@ -44,11 +44,7 @@ public class Stop extends GcpAppMojo {
       flags.put(Option.SERVER, server);
     }
 
-    try {
-      this.action = new StopAction(modules, version, flags);
-    } catch (InvalidFlagException ife) {
-
-    }
+    action = new StopAction(modules, version, flags);
 
     this.executeAction();
   }

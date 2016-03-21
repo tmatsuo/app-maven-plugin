@@ -16,16 +16,15 @@
 package com.google.cloud.tools.maven;
 
 import com.google.cloud.tools.Action;
-import com.google.cloud.tools.StageGenericJavaAction;
-import com.google.cloud.tools.maven.configs.DeployConfig;
-import com.google.cloud.tools.maven.configs.StageConfig;
-import com.google.cloud.tools.StageAction;
-import com.google.common.base.Strings;
 import com.google.cloud.tools.DeployAction;
-import com.google.cloud.tools.DeployAction.AppType;
 import com.google.cloud.tools.InvalidDirectoryException;
 import com.google.cloud.tools.InvalidFlagException;
 import com.google.cloud.tools.Option;
+import com.google.cloud.tools.StageAction;
+import com.google.cloud.tools.StageGenericJavaAction;
+import com.google.cloud.tools.maven.configs.DeployConfig;
+import com.google.cloud.tools.maven.configs.StageConfig;
+import com.google.common.base.Strings;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -63,7 +62,7 @@ public class Deploy extends GcpAppMojo {
       defaultValue = "${project.build.directory}/${project.build.finalName}")
   private String sourceDirLocation;
   @Parameter(property = "gcp.app.deploy.configDir",
-      defaultValue = "${project.build.directory}/src/main/appengine")
+      defaultValue = "${project.basedir}/src/main/appengine")
   private String configLocation;
 
   // Required by SdkResolver.
@@ -80,11 +79,12 @@ public class Deploy extends GcpAppMojo {
   private File stagingDir;
 
   public void execute() throws MojoExecutionException {
-    getLog().info(String.format("Starting to execute app to project %s.", cloudProject));
 
+    getLog().info("Parsing flags.");
     // Applies command line flag overrides specified with -D.
     deployConfig.overrideWithCommandLineFlags();
 
+    getLog().info("Starting staging.");
     try {
       stagingDir = prepareStagingEnvironment();
     } catch (IOException ioEx) {
@@ -98,7 +98,7 @@ public class Deploy extends GcpAppMojo {
       File configDir = new File(configLocation);
       File appYaml = new File(configDir, "app.yaml");
       File dockerfile = new File(configDir, "Dockerfile");
-      File artifact = new File(sourceDirLocation,
+      File artifact = new File(new File(mavenProject.getBuild().getDirectory()),
           mavenProject.getBuild().getFinalName() + "." + mavenProject.getPackaging());
 
       stageAction = new StageGenericJavaAction(appYaml, dockerfile, artifact, stagingDir);
@@ -110,15 +110,13 @@ public class Deploy extends GcpAppMojo {
     }
 
     try {
-      this.action = new DeployAction(stagingDir.getAbsolutePath(), AppType.CLASSIC_APP_ENGINE,
-          getFlags(), stageAction);
-    } catch (InvalidDirectoryException ide) {
-      throw new MojoExecutionException(ide.getMessage(), ide);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    }
+      action = new DeployAction(stagingDir.getAbsolutePath(), getFlags(), stageAction);
 
-    this.executeAction();
+      getLog().info("Starting deployment with gcloud.");
+      this.executeAction();
+    } catch (InvalidDirectoryException|InvalidFlagException ex) {
+      throw new MojoExecutionException(ex.getMessage(), ex);
+    }
   }
 
   /**
@@ -131,17 +129,17 @@ public class Deploy extends GcpAppMojo {
     File stagingDir = new File(stagingDirLocation);
 
     if (stagingDir.exists() && stagingDir.isFile()) {
-      throw new MojoExecutionException(String.format(
+      throw new MojoExecutionException(
           "Staging location already exists and is a file. Please delete it before deploying. "
-          + "Location: %s", stagingDir.getAbsolutePath()));
+          + "Location: " + stagingDir.getAbsolutePath());
     }
 
     if (!stagingDir.exists()) {
       if (!stagingDir.mkdir()) {
-        throw new MojoExecutionException(String.format(
-            "Staging directory could not be created at %s", stagingDir.getAbsolutePath()));
+        throw new MojoExecutionException(
+            "Staging directory could not be created at " + stagingDir.getAbsolutePath());
       }
-      getLog().info(String.format("Staging directory created at %s", stagingDir.getAbsolutePath()));
+      getLog().info("Staging directory created at " + stagingDir.getAbsolutePath());
     }
 
     if (stagingDir.listFiles().length > 0) {
@@ -154,7 +152,42 @@ public class Deploy extends GcpAppMojo {
   private Map<Option, String> getStagingFlags() {
     Map<Option, String> flags = new HashMap<>();
 
-//    if (!Strings.isNullOrEmpty())
+    if (stageConfig.enableQuickstart != null) {
+      flags.put(Option.ENABLE_QUICKSTART, stageConfig.enableQuickstart.toString());
+    }
+    if (stageConfig.disableUpdateCheck != null) {
+      flags.put(Option.DISABLE_UPDATE_CHECK, stageConfig.disableUpdateCheck.toString());
+    }
+    if (!Strings.isNullOrEmpty(stageConfig.version)) {
+      flags.put(Option.VERSION, stageConfig.version);
+    }
+    if (!Strings.isNullOrEmpty(stageConfig.gcloudProject)) {
+      flags.put(Option.GCLOUD_PROJECT, stageConfig.gcloudProject);
+    }
+    if (stageConfig.enableJarSplitting != null) {
+      flags.put(Option.ENABLE_JAR_SPLITTING, stageConfig.enableJarSplitting.toString());
+    }
+    if (!Strings.isNullOrEmpty(stageConfig.jarSplittingExcludes)) {
+      flags.put(Option.JAR_SPLITTING_EXCLUDES, stageConfig.jarSplittingExcludes);
+    }
+    if (stageConfig.retainUploadDir != null) {
+      flags.put(Option.RETAIN_UPLOAD_DIR, stageConfig.retainUploadDir.toString());
+    }
+    if (!Strings.isNullOrEmpty(stageConfig.compileEncoding)) {
+      flags.put(Option.COMPILE_ENCODING, stageConfig.compileEncoding);
+    }
+    if (stageConfig.force != null) {
+      flags.put(Option.FORCE, stageConfig.force.toString());
+    }
+    if (stageConfig.deleteJsps != null) {
+      flags.put(Option.DELETE_JSPS, stageConfig.deleteJsps.toString());
+    }
+    if (stageConfig.enableJarClasses != null) {
+      flags.put(Option.ENABLE_JAR_CLASSES, stageConfig.enableJarClasses.toString());
+    }
+    if (!Strings.isNullOrEmpty(stageConfig.runtime)) {
+      flags.put(Option.RUNTIME, stageConfig.runtime);
+    }
 
     return flags;
   }
@@ -179,6 +212,9 @@ public class Deploy extends GcpAppMojo {
     }
     if (!Strings.isNullOrEmpty(deployConfig.server)) {
       flags.put(Option.SERVER, deployConfig.server);
+    }
+    if (!Strings.isNullOrEmpty(deployConfig.version)) {
+      flags.put(Option.VERSION, deployConfig.version);
     }
 
     return flags;

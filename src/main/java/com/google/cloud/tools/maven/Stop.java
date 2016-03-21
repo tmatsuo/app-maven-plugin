@@ -50,13 +50,11 @@ public class Stop extends GcpAppMojo {
     }
 
     try {
-      this.action = new StopAction(flags);
-    } catch (InvalidFlagException ife) {
-      throw new MojoExecutionException(ife.getMessage(), ife);
-    } catch (GCloudErrorException gee) {
-      throw new MojoExecutionException(gee.getMessage(), gee);
-    }
+      action = new StopAction(flags);
 
-    this.executeAction();
+      this.executeAction();
+    } catch (InvalidFlagException|GCloudErrorException ex) {
+      throw new MojoExecutionException(ex.getMessage(), ex);
+    }
   }
 }
