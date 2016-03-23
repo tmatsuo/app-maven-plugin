@@ -15,8 +15,8 @@
  */
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.RunAction;
+import com.google.cloud.tools.app.InvalidFlagException;
+import com.google.cloud.tools.app.RunAction;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;

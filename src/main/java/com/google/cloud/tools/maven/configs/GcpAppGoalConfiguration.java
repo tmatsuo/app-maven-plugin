@@ -15,13 +15,18 @@
  */
 package com.google.cloud.tools.maven.configs;
 
+import com.google.common.collect.Lists;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
 /**
  * Set of configurations for a Maven goal.
  */
-public abstract class Config {
+public abstract class GcpAppGoalConfiguration {
 
   public abstract void overrideWithCommandLineFlags();
 
@@ -42,6 +47,18 @@ public abstract class Config {
       } else {
         return false;
       }
+    }
+
+    return null;
+  }
+
+  /**
+   * Splits the value using comma as delimiter.
+   */
+  protected Collection<String> getCollectionFromMap(String key, Map<Object, Object> map) {
+    if (map.containsKey(key)) {
+      String[] tokens = String.valueOf(map.get(key)).split(",");
+      return Lists.newArrayList(tokens);
     }
 
     return null;

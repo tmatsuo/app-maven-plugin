@@ -15,13 +15,14 @@
  */
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.Action;
-import com.google.cloud.tools.DeployAction;
-import com.google.cloud.tools.InvalidDirectoryException;
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.StageAction;
-import com.google.cloud.tools.StageGenericJavaAction;
+import com.google.cloud.tools.app.Action;
+import com.google.cloud.tools.app.DeployAction;
+import com.google.cloud.tools.app.GCloudExecutionException;
+import com.google.cloud.tools.app.InvalidDirectoryException;
+import com.google.cloud.tools.app.InvalidFlagException;
+import com.google.cloud.tools.app.Option;
+import com.google.cloud.tools.app.StageAction;
+import com.google.cloud.tools.app.StageGenericJavaAction;
 import com.google.cloud.tools.maven.configs.DeployConfig;
 import com.google.cloud.tools.maven.configs.StageConfig;
 import com.google.common.base.Strings;
@@ -92,29 +93,31 @@ public class Deploy extends GcpAppMojo {
       return;
     }
 
-    File appEngineXml = new File(sourceDirLocation + "/WEB-INF/appengine-web.xml");
-    Action stageAction;
-    if (mavenProject.getPackaging().equals("jar") || !appEngineXml.exists()) {
-      File configDir = new File(configLocation);
-      File appYaml = new File(configDir, "app.yaml");
-      File dockerfile = new File(configDir, "Dockerfile");
-      File artifact = new File(new File(mavenProject.getBuild().getDirectory()),
-          mavenProject.getBuild().getFinalName() + "." + mavenProject.getPackaging());
-
-      stageAction = new StageGenericJavaAction(appYaml, dockerfile, artifact, stagingDir);
-    } else {
-      File sdkRoot = SdkResolver.getSdk(mavenProject, repositorySystem, repositorySession,
-          pluginRepositories, projectRepositories);
-      stageAction = new StageAction(sourceDirLocation, stagingDirLocation,
-          sdkRoot.getAbsolutePath(), getStagingFlags());
-    }
-
     try {
-      action = new DeployAction(stagingDir.getAbsolutePath(), getFlags(), stageAction);
+      File appEngineXml = new File(sourceDirLocation + "/WEB-INF/appengine-web.xml");
+      Action stageAction;
+      if (mavenProject.getPackaging().equals("jar") || !appEngineXml.exists()) {
+        File configDir = new File(configLocation);
+        File appYaml = new File(configDir, "app.yaml");
+        File dockerfile = new File(configDir, "Dockerfile");
+        File artifact = new File(new File(mavenProject.getBuild().getDirectory()),
+            mavenProject.getBuild().getFinalName() + "." + mavenProject.getPackaging());
+
+        stageAction = new StageGenericJavaAction(appYaml, dockerfile, artifact, stagingDir);
+        stageAction.execute();
+      } else {
+        File sdkRoot = SdkResolver.getSdk(mavenProject, repositorySystem, repositorySession,
+            pluginRepositories, projectRepositories);
+        stageAction = new StageAction(sourceDirLocation, stagingDirLocation,
+            sdkRoot.getAbsolutePath(), getStagingFlags());
+        stageAction.execute();
+      }
+      action = new DeployAction(stagingDir.getAbsolutePath(), getFlags());
 
       getLog().info("Starting deployment with gcloud.");
       this.executeAction();
-    } catch (InvalidDirectoryException|InvalidFlagException ex) {
+    } catch (InvalidDirectoryException |InvalidFlagException|GCloudExecutionException
+        |IOException ex) {
       throw new MojoExecutionException(ex.getMessage(), ex);
     }
   }

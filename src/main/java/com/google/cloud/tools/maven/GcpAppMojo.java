@@ -15,17 +15,17 @@
  */
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.InvalidDirectoryException;
+import com.google.cloud.tools.app.Action;
+import com.google.cloud.tools.app.GCloudExecutionException;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.cloud.tools.Action;
-import com.google.cloud.tools.GCloudErrorException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -63,15 +63,11 @@ public abstract class GcpAppMojo extends AbstractMojo {
     try {
       // Set Cloud SDK location override if there is any.
       if (!Strings.isNullOrEmpty(cloudSdkOverride)) {
-        try {
-          action.setCloudSdkOverride(cloudSdkOverride);
-        } catch (InvalidDirectoryException ide) {
-          throw new MojoExecutionException(ide.getMessage(), ide);
-        }
+        action.setCloudSdkOverride(cloudSdkOverride);
       }
 
       didExecute = action.execute();
-    } catch (GCloudErrorException gcEx) {
+    } catch (GCloudExecutionException|IOException gcEx) {
       getLog().debug(Throwables.getStackTraceAsString(gcEx));
       throw new MojoExecutionException(gcEx.getMessage(), gcEx);
     }

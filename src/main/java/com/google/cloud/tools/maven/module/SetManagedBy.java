@@ -15,11 +15,10 @@
  */
 package com.google.cloud.tools.maven.module;
 
+import com.google.cloud.tools.app.Option;
+import com.google.cloud.tools.app.module.SetManagedByAction;
 import com.google.cloud.tools.maven.GcpAppMojo;
 import com.google.common.base.Strings;
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.module.SetManagedByAction;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;

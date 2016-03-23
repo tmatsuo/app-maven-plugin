@@ -15,8 +15,8 @@
  */
 package com.google.cloud.tools.maven;
 
+import com.google.cloud.tools.app.Option;
 import com.google.common.base.Strings;
-import com.google.cloud.tools.Option;
 
 import org.apache.maven.plugins.annotations.Parameter;
 

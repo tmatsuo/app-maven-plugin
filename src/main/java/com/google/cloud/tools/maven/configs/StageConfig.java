@@ -20,7 +20,7 @@ import java.util.Properties;
 /**
  * Configuration for the {@link com.google.cloud.tools.StageAction} goal.
  */
-public class StageConfig extends Config {
+public class StageConfig extends GcpAppGoalConfiguration {
 
   private static String ENABLE_QUICKSTART_KEY = "gcp.app.stage.enable-quickstart";
   private static String DISABLE_UPDATE_CHECK_KEY = "gcp.app.stage.disable-update-check";

@@ -15,16 +15,14 @@
  */
 package com.google.cloud.tools.maven.module;
 
+import com.google.cloud.tools.app.module.DeleteAction;
 import com.google.cloud.tools.maven.GcpAppMojo;
+import com.google.cloud.tools.maven.configs.module.DeleteConfig;
 import com.google.common.base.Strings;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.module.DeleteAction;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Deletes a version of one or more modules.
@@ -32,18 +30,20 @@ import java.util.Map;
 @Mojo(name = "module-delete")
 public class Delete extends GcpAppMojo {
 
+  @Parameter(defaultValue = "${module-delete}")
+  private DeleteConfig moduleDelete;
+
   public void execute() throws MojoExecutionException {
-    if (Strings.isNullOrEmpty(version)) {
+    moduleDelete.overrideWithCommandLineFlags();
+
+    if (Strings.isNullOrEmpty(moduleDelete.version)) {
       throw new MojoExecutionException("No specified version. Please specify a version in "
-          + "the pom.xml file or with the -Dcloud.app.version flag.");
+          + "the pom.xml file or with the -D" + moduleDelete.VERSION_KEY + " flag.");
     }
 
-    Map<Option, String> flags = new HashMap<>();
-    if (!Strings.isNullOrEmpty(server)) {
-      flags.put(Option.SERVER, server);
-    }
-
-    action = new DeleteAction(modules, version, flags);
+    action = DeleteAction.newDeleteAction(
+        moduleDelete.version, moduleDelete.modules.toArray(new String[moduleDelete.modules.size()]))
+        .setServer(moduleDelete.server);
 
     this.executeAction();
   }

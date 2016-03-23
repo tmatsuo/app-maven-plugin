@@ -22,7 +22,7 @@ import java.util.Properties;
 /**
  * Configuration for the {@link Deploy} goal.
  */
-public class DeployConfig extends Config {
+public class DeployConfig extends GcpAppGoalConfiguration {
 
   private static String BUCKET_KEY = "gcp.app.deploy.bucket";
   private static String DOCKER_BUILD_KEY = "gcp.app.deploy.dockerBuild";

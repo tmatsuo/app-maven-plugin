@@ -15,11 +15,33 @@
  */
 package com.google.cloud.tools.maven.configs.module;
 
+import com.google.cloud.tools.maven.configs.GcpAppGoalConfiguration;
 import com.google.cloud.tools.maven.module.Delete;
+
+import java.util.Collection;
 
 /**
  * Configuration for the {@link Delete} goal.
  */
-public class DeleteConfig {
+public class DeleteConfig extends GcpAppGoalConfiguration {
 
+  public static String MODULES_KEY = "gcp.app.module.delete.modules";
+  public static String VERSION_KEY = "gcp.app.module.delete.version";
+  public static String SERVER_KEY = "gcp.app.module.delete.server";
+
+  public Collection<String> modules;
+  public String version;
+  public String server;
+
+  public void overrideWithCommandLineFlags() {
+    if (getCollectionFromMap(MODULES_KEY, System.getProperties()) != null) {
+      modules = getCollectionFromMap(MODULES_KEY, System.getProperties());
+    }
+    if (getStringFromMap(VERSION_KEY, System.getProperties()) != null) {
+      version = getStringFromMap(VERSION_KEY, System.getProperties());
+    }
+    if (getStringFromMap(SERVER_KEY, System.getProperties()) != null) {
+      server = getStringFromMap(SERVER_KEY, System.getProperties());
+    }
+  }
 }

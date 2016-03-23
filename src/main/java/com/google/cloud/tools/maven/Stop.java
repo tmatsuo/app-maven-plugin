@@ -15,11 +15,11 @@
  */
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.GCloudErrorException;
+import com.google.cloud.tools.app.GCloudExecutionException;
+import com.google.cloud.tools.app.InvalidFlagException;
+import com.google.cloud.tools.app.Option;
+import com.google.cloud.tools.app.StopAction;
 import com.google.common.base.Strings;
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.StopAction;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -53,7 +53,7 @@ public class Stop extends GcpAppMojo {
       action = new StopAction(flags);
 
       this.executeAction();
-    } catch (InvalidFlagException|GCloudErrorException ex) {
+    } catch (InvalidFlagException|GCloudExecutionException ex) {
       throw new MojoExecutionException(ex.getMessage(), ex);
     }
   }

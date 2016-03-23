@@ -15,11 +15,10 @@
  */
 package com.google.cloud.tools.maven.module;
 
+import com.google.cloud.tools.app.Option;
+import com.google.cloud.tools.app.module.GetLogsAction;
 import com.google.cloud.tools.maven.GcpAppMojo;
 import com.google.common.base.Strings;
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.module.GetLogsAction;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -59,7 +58,17 @@ public class GetLogs extends GcpAppMojo {
 
     getLog().info("Logs will be saved at " + logFileLocation);
 
-    action = new GetLogsAction(modules, version, logFileLocation, getFlags());
+    action = GetLogsAction.newGetLogsAction()
+        .setModules(modules)
+        .setVersion(version)
+        .setLogFileLocation(logFileLocation)
+        .setAppend(appendFile)
+        .setDays(days.toString())
+        .setDetails(details)
+        .setEndDate(endDate)
+        .setServer(server)
+        .setSeverity(severity)
+        .setVhost(vhost);
 
     this.executeAction();
   }

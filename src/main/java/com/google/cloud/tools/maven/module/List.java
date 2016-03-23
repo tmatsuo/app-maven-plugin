@@ -15,17 +15,13 @@
  */
 package com.google.cloud.tools.maven.module;
 
-import com.google.appengine.repackaged.com.google.api.client.util.Strings;
-import com.google.cloud.tools.InvalidFlagException;
-import com.google.cloud.tools.Option;
-import com.google.cloud.tools.module.ListAction;
+import com.google.cloud.tools.app.module.ListAction;
 import com.google.cloud.tools.maven.GcpAppMojo;
+import com.google.cloud.tools.maven.configs.module.DefaultListConfigurationImpl;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Lists versions for every module, or for a selected set of modules.
@@ -33,17 +29,14 @@ import java.util.Map;
 @Mojo(name = "module-list")
 public class List extends GcpAppMojo {
 
+
+  @Parameter
+  private DefaultListConfigurationImpl moduleList;
+
   public void execute() throws MojoExecutionException {
-
-    Map<Option, String> flags = new HashMap<>();
-
-    if (!Strings.isNullOrEmpty(server)) {
-      flags.put(Option.SERVER, server);
-    }
-
     // TODO(joaomartins): On no module provided by the user, this will be set to "default", whereas
     // we want to list every module.
-    action = new ListAction(modules, flags);
+    action = new ListAction(moduleList);
 
     this.executeAction();
   }
