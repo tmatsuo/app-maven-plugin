@@ -8,10 +8,8 @@ import com.google.cloud.tools.app.api.deploy.StageStandardConfiguration;
 import com.google.cloud.tools.app.impl.appcfg.AppCfgAppEngineStandardStaging;
 import com.google.cloud.tools.app.impl.appcfg.AppEngineSdk;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineFlexibleStaging;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -20,7 +18,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -28,12 +25,10 @@ import java.io.IOException;
  */
 @Mojo(name = "stage")
 @Execute(phase = LifecyclePhase.PACKAGE)
-public class StageMojo extends AbstractMojo implements StageStandardConfiguration,
+public class StageMojo extends CloudSdkMojo implements StageStandardConfiguration,
     StageFlexibleConfiguration {
 
   // Standard & Flexible params
-  @Parameter(required = true)
-  protected File cloudSdkPath;
   @Parameter(required = true, defaultValue = "${project.build.directory}/appengine-staging",
       property = "gcp.app.stage.stagingDirectory")
   private File stagingDirectory;
@@ -74,14 +69,7 @@ public class StageMojo extends AbstractMojo implements StageStandardConfiguratio
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    if (cloudSdkPath == null) {
-      try {
-        cloudSdkPath = PathResolver.INSTANCE.getCloudSdkPath();
-      } catch (FileNotFoundException e) {
-        throw new MojoFailureException(
-            "Cloud SDK Path was not provided, and cannot be automatically detected.", e);
-      }
-    }
+    super.execute();
 
     // delete staging directory if it exists
     if (stagingDirectory.exists()) {
@@ -112,6 +100,7 @@ public class StageMojo extends AbstractMojo implements StageStandardConfiguratio
   }
 
   private void stageStandard() throws AppEngineException {
+    // TODO: the path should move to common lib
     AppEngineSdk appEngineSdk = new AppEngineSdk(new File(cloudSdkPath.toString()
         + "/platform/google_appengine/google/appengine/tools/java"));
 

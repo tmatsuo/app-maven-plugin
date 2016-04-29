@@ -8,7 +8,6 @@ import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.app.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDeployment;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -53,8 +52,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
           new File(getStagingDirectory() + "/app.yaml"));
     }
 
-    CloudSdk sdk = new CloudSdk(cloudSdkPath);
-    AppEngineDeployment deployment = new CloudSdkAppEngineDeployment(sdk);
+    AppEngineDeployment deployment = new CloudSdkAppEngineDeployment(cloudSdk);
 
     try {
       deployment.deploy(this);
