@@ -28,35 +28,30 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
 
   // Standard & Flexible params
   @Parameter(required = true, defaultValue = "${project.build.directory}/appengine-staging",
-      property = "gcp.app.stage.stagingDirectory")
+      name = "stageStagingDirectory", property = "app.stage.stagingDirectory")
   private File stagingDirectory;
-  @Parameter(property = "gcp.app.stage.dockerfile")
+  @Parameter(property = "app.stage.dockerfile")
   private File dockerfile;
 
   // Standard-only params
   @Parameter(required = true,
       defaultValue = "${project.build.directory}/${project.build.finalName}",
-      property = "gcp.app.stage.sourceDirectory")
+      property = "app.stage.sourceDirectory")
   private File sourceDirectory;
-  @Parameter(property = "gcp.app.stage.enable-quickstart")
+  @Parameter(property = "app.stage.enable-quickstart")
   private boolean enableQuickstart;
-  @Parameter(property = "gcp.app.stage.disable-update-check")
+  @Parameter(property = "app.stage.disable-update-check")
   private boolean disableUpdateCheck;
-  // TODO: application vs project?
-  @Parameter(property = "gcp.app.stage.project")
-  private String applicationId;
-  @Parameter(property = "gcp.app.stage.enable-jar-splitting")
+  @Parameter(property = "app.stage.enable-jar-splitting")
   private boolean enableJarSplitting;
-  @Parameter(property = "gcp.app.stage.jar-splitting-excludes")
+  @Parameter(property = "app.stage.jar-splitting-excludes")
   private String jarSplittingExcludes;
-  @Parameter(property = "gcp.app.stage.compile-encoding-key")
+  @Parameter(property = "app.stage.compile-encoding-key")
   private String compileEncoding;
-  @Parameter(property = "gcp.app.stage.delete-jsps")
+  @Parameter(property = "app.stage.delete-jsps")
   private boolean deleteJsps;
-  @Parameter(property = "gcp.app.stage.enable-jar-classes")
+  @Parameter(property = "app.stage.enable-jar-classes")
   private boolean enableJarClasses;
-  @Parameter(property = "gcp.app.stage.version")
-  protected String version;
 
   // Flexible-only params
   @Parameter(defaultValue = "${basedir}/src/main/appengine/app.yaml")
@@ -158,11 +153,6 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
   @Override
   public boolean isEnableJarClasses() {
     return enableJarClasses;
-  }
-
-  @Override
-  public String getVersion() {
-    return version;
   }
 
   @Override
