@@ -28,7 +28,7 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
 
   // Standard & Flexible params
   @Parameter(required = true, defaultValue = "${project.build.directory}/appengine-staging",
-      name = "stageStagingDirectory", property = "app.stage.stagingDirectory")
+      alias = "stage.stagingDirectory", property = "app.stage.stagingDirectory")
   private File stagingDirectory;
   @Parameter(property = "app.stage.dockerfile")
   private File dockerfile;
@@ -75,21 +75,15 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
     }
     stagingDirectory.mkdir();
 
-    try {
-      getLog().info("Staging the application to: " + stagingDirectory);
+    getLog().info("Staging the application to: " + stagingDirectory);
 
-      if (new File(sourceDirectory.toString() + "/WEB-INF/appengine-web.xml").exists()) {
-        getLog().info("Detected App Engine standard environment application.");
-        stageStandard();
-      } else {
-        getLog().info("Detected App Engine flexible environment application.");
-        stageFlexible();
-      }
-
-    } catch (AppEngineException e) {
-      throw new MojoFailureException("Staging for deployment failed.", e);
+    if (new File(sourceDirectory.toString() + "/WEB-INF/appengine-web.xml").exists()) {
+      getLog().info("Detected App Engine standard environment application.");
+      stageStandard();
+    } else {
+      getLog().info("Detected App Engine flexible environment application.");
+      stageFlexible();
     }
-
   }
 
   private void stageStandard() throws AppEngineException {

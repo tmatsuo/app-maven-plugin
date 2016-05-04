@@ -4,7 +4,6 @@ package com.google.cloud.tools.maven;
  * Stages and then deploys application to App Engine standard or flexible environment.
  */
 
-import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.app.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDeployment;
@@ -31,65 +30,65 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
    * app.yaml in the current directory. If that is not found, attempts to automatically generate
    * necessary configuration files (such as app.yaml) in the current directory.
    */
-  @Parameter(name = "deployDeployables", property = "app.deploy.deployables")
+  @Parameter(alias = "deploy.deployables", property = "app.deploy.deployables")
   private List<File> deployables;
 
   /**
    * The Google Cloud Storage bucket used to stage files associated with the deployment. If this
    * argument is not specified, the application's default code bucket is used.
    */
-  @Parameter(name = "deployBucket", property = "app.deploy.bucket")
+  @Parameter(alias = "deploy.bucket", property = "app.deploy.bucket")
   private String bucket;
 
   /**
    * Perform a hosted ('remote') or local ('local') Docker build. To perform a local build, you must
    * have your local docker environment configured correctly. The default is a hosted build.
    */
-  @Parameter(name = "deployDockerBuild", property = "app.deploy.dockerBuild")
+  @Parameter(alias = "deploy.dockerBuild", property = "app.deploy.dockerBuild")
   private String dockerBuild;
 
   /**
    * Force deploying, overriding any previous in-progress deployments to this version.
    */
-  @Parameter(name = "deployForce", property = "app.deploy.force")
+  @Parameter(alias = "deploy.force", property = "app.deploy.force")
   private boolean force;
 
   /**
    * Deploy with a specific Docker image. Docker url must be from one of the valid gcr hostnames.
    */
-  @Parameter(name = "deployImageUrl", property = "app.deploy.imageUrl")
+  @Parameter(alias = "deploy.imageUrl", property = "app.deploy.imageUrl")
   private String imageUrl;
 
   /**
    * Promote the deployed version to receive all traffic. True by default.
    */
-  @Parameter(name = "deployPromote", property = "app.deploy.promote")
+  @Parameter(alias = "deploy.promote", property = "app.deploy.promote")
   private boolean promote;
 
   /**
    * The App Engine server to connect to. You will not typically need to change this value.
    */
-  @Parameter(name = "deployServer", property = "app.deploy.server")
+  @Parameter(alias = "deploy.server", property = "app.deploy.server")
   private String server;
 
   /**
    * Stop the previously running version when deploying a new version that receives all traffic.
    */
-  @Parameter(name = "deployStopPreviousVersion", property = "app.deploy.stopPreviousVersion")
+  @Parameter(alias = "deploy.stopPreviousVersion", property = "app.deploy.stopPreviousVersion")
   private boolean stopPreviousVersion;
 
   /**
    * The version of the app that will be created or replaced by this deployment. If you do not
    * specify a version, one will be generated for you.
    */
-  @Parameter(name = "deployVersion", property = "app.deploy.version")
+  @Parameter(alias = "deploy.version", property = "app.deploy.version")
   private String version;
 
   /**
    * The Google Cloud Platform project name to use for this invocation. If omitted then the current
    * project is assumed.
    */
-  @Parameter(name = "deployProject", property = "app.deploy.project")
+  @Parameter(alias = "deploy.project", property = "app.deploy.project")
   private String project;
 
   @Override
@@ -103,12 +102,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
     }
 
     AppEngineDeployment deployment = new CloudSdkAppEngineDeployment(cloudSdk);
-
-    try {
-      deployment.deploy(this);
-    } catch (AppEngineException e) {
-      throw new MojoExecutionException(e.getMessage());
-    }
+    deployment.deploy(this);
   }
 
   @Override
