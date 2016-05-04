@@ -1,5 +1,7 @@
 package com.google.cloud.tools.maven;
 
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.DefaultProcessRunner;
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.ProcessRunner;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 
@@ -21,6 +23,8 @@ public abstract class CloudSdkMojo extends AbstractMojo {
 
   protected CloudSdk cloudSdk;
 
+  protected DefaultProcessRunner processRunner;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     // ensure that the Cloud SDK is available
@@ -32,6 +36,10 @@ public abstract class CloudSdkMojo extends AbstractMojo {
             "Cloud SDK Path was not provided, and cannot be automatically detected.", e);
       }
     }
-    this.cloudSdk = new CloudSdk(cloudSdkPath);
+    if (processRunner == null) {
+      this.cloudSdk = new CloudSdk(cloudSdkPath);
+    } else {
+      this.cloudSdk = new CloudSdk(cloudSdkPath, processRunner);
+    }
   }
 }

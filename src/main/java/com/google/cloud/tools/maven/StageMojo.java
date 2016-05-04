@@ -2,12 +2,10 @@ package com.google.cloud.tools.maven;
 
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.deploy.AppEngineFlexibleStaging;
-import com.google.cloud.tools.app.api.deploy.AppEngineStandardStaging;
 import com.google.cloud.tools.app.api.deploy.StageFlexibleConfiguration;
 import com.google.cloud.tools.app.api.deploy.StageStandardConfiguration;
-import com.google.cloud.tools.app.impl.appcfg.AppCfgAppEngineStandardStaging;
-import com.google.cloud.tools.app.impl.appcfg.AppEngineSdk;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineFlexibleStaging;
+import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineStandardStaging;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -100,11 +98,7 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
   }
 
   private void stageStandard() throws AppEngineException {
-    // TODO: the path should move to common lib
-    AppEngineSdk appEngineSdk = new AppEngineSdk(new File(cloudSdkPath.toString()
-        + "/platform/google_appengine/google/appengine/tools/java"));
-
-    AppEngineStandardStaging staging = new AppCfgAppEngineStandardStaging(appEngineSdk);
+    CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(cloudSdk);
 
     // execute the staging
     staging.stageStandard(this);
@@ -139,11 +133,6 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
   @Override
   public boolean isDisableUpdateCheck() {
     return disableUpdateCheck;
-  }
-
-  @Override
-  public String getApplicationId() {
-    return applicationId;
   }
 
   @Override

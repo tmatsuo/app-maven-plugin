@@ -41,6 +41,8 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
   private boolean stopPreviousVersion;
   @Parameter(property = "gcp.app.deploy.version")
   private String version;
+  @Parameter(property = "gcp.app.deploy.project")
+  private String project;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -104,5 +106,10 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
   @Override
   public String getVersion() {
     return version;
+  }
+
+  @Override
+  public String getProject() {
+    return project;
   }
 }

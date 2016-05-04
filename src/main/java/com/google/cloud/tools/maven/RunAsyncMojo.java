@@ -1,10 +1,10 @@
 package com.google.cloud.tools.maven;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Starts running App Engine Development App Server asynchronously.
@@ -13,9 +13,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class RunAsyncMojo extends RunMojo {
 
-  @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    // TODO: do it async
-    super.execute();
+  private CountDownLatch waitStartedLatch;
+
+  /**
+   * Configures an asynchronous process runner for running server.
+   */
+  public RunAsyncMojo() {
+    super();
+    processRunner.setAsync(true);
   }
+
 }
