@@ -1,6 +1,5 @@
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.devserver.AppEngineDevServer;
 import com.google.cloud.tools.app.api.devserver.StopConfiguration;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
@@ -27,11 +26,7 @@ public class StopMojo extends CloudSdkMojo implements StopConfiguration {
 
     AppEngineDevServer devServer = new CloudSdkAppEngineDevServer(cloudSdk);
 
-    try {
-      devServer.stop(this);
-    } catch (AppEngineException e) {
-      throw new MojoFailureException("Failed to stop the App Engine Development server.", e);
-    }
+    devServer.stop(this);
   }
 
   @Override

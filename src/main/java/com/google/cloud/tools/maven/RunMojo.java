@@ -1,7 +1,6 @@
 package com.google.cloud.tools.maven;
 
 
-import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.devserver.AppEngineDevServer;
 import com.google.cloud.tools.app.api.devserver.RunConfiguration;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
@@ -114,8 +113,8 @@ public class RunMojo extends CloudSdkMojo implements RunConfiguration {
       if (!waitStartedLatch.await(10, TimeUnit.SECONDS)) {
         getLog().error("Timed out waiting to start App Engine Development server");
       }
-    } catch (AppEngineException | InterruptedException e) {
-      throw new MojoFailureException("Failed to start the App Engine Development server.", e);
+    } catch (InterruptedException e) {
+      throw new MojoExecutionException("Failed to start the App Engine Development server.", e);
     } finally {
       waitStartedLatch.countDown();
     }

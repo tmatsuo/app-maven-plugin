@@ -1,6 +1,5 @@
 package com.google.cloud.tools.maven;
 
-import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.deploy.AppEngineFlexibleStaging;
 import com.google.cloud.tools.app.api.deploy.StageFlexibleConfiguration;
 import com.google.cloud.tools.app.api.deploy.StageStandardConfiguration;
@@ -86,14 +85,14 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
     }
   }
 
-  private void stageStandard() throws AppEngineException {
+  private void stageStandard()  {
     CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(cloudSdk);
 
     // execute the staging
     staging.stageStandard(this);
   }
 
-  private void stageFlexible() throws AppEngineException {
+  private void stageFlexible() {
     getLog().info(artifact.toString());
     AppEngineFlexibleStaging staging = new CloudSdkAppEngineFlexibleStaging();
     staging.stageFlexible(this);

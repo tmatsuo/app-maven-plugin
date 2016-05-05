@@ -1,7 +1,6 @@
 package com.google.cloud.tools.maven;
 
 import com.google.cloud.tools.app.impl.cloudsdk.internal.process.DefaultProcessRunner;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.process.ProcessRunner;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 
@@ -18,7 +17,10 @@ import java.io.FileNotFoundException;
  */
 public abstract class CloudSdkMojo extends AbstractMojo {
 
-  @Parameter(required = true)
+  /**
+   * Optional parameter to configure the location of the Google Cloud SDK.
+   */
+  @Parameter(property = "cloudSdkPath", required = false)
   protected File cloudSdkPath;
 
   protected CloudSdk cloudSdk;
