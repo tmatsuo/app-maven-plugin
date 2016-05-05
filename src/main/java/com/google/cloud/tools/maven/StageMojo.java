@@ -18,45 +18,120 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Stages application for App Engine standard or flexible environment deployment.
+ * Generates a deploy-ready application directory for App Engine standard or flexible environment
+ * deployment.
  */
 @Mojo(name = "stage")
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class StageMojo extends CloudSdkMojo implements StageStandardConfiguration,
     StageFlexibleConfiguration {
 
+  ///////////////////////////////////
   // Standard & Flexible params
+  //////////////////////////////////
+
+  /**
+   * The directory to which to stage the application.
+   */
   @Parameter(required = true, defaultValue = "${project.build.directory}/appengine-staging",
       alias = "stage.stagingDirectory", property = "app.stage.stagingDirectory")
   private File stagingDirectory;
-  @Parameter(property = "app.stage.dockerfile")
+
+  /**
+   * The location of the dockerfile to use for App Engine flexible environment. This also applies to
+   * App Engine Standard applications running on the flexible environment.
+   */
+  @Parameter(alias = "stage.dockerfile", property = "app.stage.dockerfile")
   private File dockerfile;
 
+  ///////////////////////////////////
   // Standard-only params
+  ///////////////////////////////////
+
+  /**
+   * The location of the compiled web application files, or the exploded WAR. This will be used as
+   * the source for staging.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
   @Parameter(required = true,
       defaultValue = "${project.build.directory}/${project.build.finalName}",
-      property = "app.stage.sourceDirectory")
+      alias = "stage.sourceDirectory", property = "app.stage.sourceDirectory")
   private File sourceDirectory;
-  @Parameter(property = "app.stage.enable-quickstart")
+
+
+  /**
+   * Use jetty quickstart to process servlet annotations.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.enableQuickstart", property = "app.stage.enableQuickstart")
   private boolean enableQuickstart;
-  @Parameter(property = "app.stage.disable-update-check")
-  private boolean disableUpdateCheck;
-  @Parameter(property = "app.stage.enable-jar-splitting")
+
+  /**
+   * Split large jar files (> 10M) into smaller fragments.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.enableJarSplitting", property = "app.stage.enableJarSplitting")
   private boolean enableJarSplitting;
-  @Parameter(property = "app.stage.jar-splitting-excludes")
+
+  /**
+   * Files that match the list of comma separated SUFFIXES will be excluded from all jars.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.jarSplittingExcludes", property = "app.stage.jarSplittingExcludes")
   private String jarSplittingExcludes;
-  @Parameter(property = "app.stage.compile-encoding-key")
+
+  /**
+   * The character encoding to use when compiling JSPs.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.compileEncoding", property = "app.stage.compileEncoding")
   private String compileEncoding;
-  @Parameter(property = "app.stage.delete-jsps")
+
+  /**
+   * Delete the JSP source files after compilation.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.deleteJsps", property = "app.stage.deleteJsps")
   private boolean deleteJsps;
-  @Parameter(property = "app.stage.enable-jar-classes")
+
+  /**
+   * Jar the WEB-INF/classes content.
+   *
+   * <p>Applies to App Engine standard environment only.
+   */
+  @Parameter(alias = "stage.enableJarClasses", property = "app.stage.enableJarClasses")
   private boolean enableJarClasses;
 
+  // always disable update check and do not expose this as a parameter
+  private boolean disableUpdateCheck = true;
+
+  ///////////////////////////////////
   // Flexible-only params
-  @Parameter(defaultValue = "${basedir}/src/main/appengine/app.yaml")
+  ///////////////////////////////////
+
+  /**
+   * The location of the app.yaml in the source directory.
+   *
+   * <p>Applies to App Engine flexible environment only.
+   */
+  @Parameter(defaultValue = "${basedir}/src/main/appengine/app.yaml",
+      alias = "stage.appYaml", property = "app.stage.appYaml")
   private File appYaml;
+
+  /**
+   * The location of the JAR or WAR archive to deploy.
+   *
+   * <p>Applies to App Engine flexible environment only.
+   */
   @Parameter(defaultValue =
-      "${project.build.directory}/${project.build.finalName}.${project.packaging}")
+      "${project.build.directory}/${project.build.finalName}.${project.packaging}",
+      alias = "stage.artifact", property = "app.stage.artifact")
   private File artifact;
 
   @Override
@@ -85,7 +160,7 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
     }
   }
 
-  private void stageStandard()  {
+  private void stageStandard() {
     CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(cloudSdk);
 
     // execute the staging
