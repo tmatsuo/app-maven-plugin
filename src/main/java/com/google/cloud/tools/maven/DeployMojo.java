@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016 Google Inc. All Right Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.google.cloud.tools.maven;
 
 /**
@@ -51,7 +67,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
    * Force deploying, overriding any previous in-progress deployments to this version.
    */
   @Parameter(alias = "deploy.force", property = "app.deploy.force")
-  private boolean force;
+  private Boolean force;
 
   /**
    * Deploy with a specific Docker image. Docker url must be from one of the valid gcr hostnames.
@@ -63,7 +79,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
    * Promote the deployed version to receive all traffic. True by default.
    */
   @Parameter(alias = "deploy.promote", property = "app.deploy.promote")
-  private boolean promote;
+  private Boolean promote;
 
   /**
    * The App Engine server to connect to. You will not typically need to change this value.
@@ -75,7 +91,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
    * Stop the previously running version when deploying a new version that receives all traffic.
    */
   @Parameter(alias = "deploy.stopPreviousVersion", property = "app.deploy.stopPreviousVersion")
-  private boolean stopPreviousVersion;
+  private Boolean stopPreviousVersion;
 
   /**
    * The version of the app that will be created or replaced by this deployment. If you do not
@@ -121,7 +137,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
   }
 
   @Override
-  public boolean isForce() {
+  public Boolean getForce() {
     return force;
   }
 
@@ -131,7 +147,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
   }
 
   @Override
-  public boolean isPromote() {
+  public Boolean getPromote() {
     return promote;
   }
 
@@ -141,7 +157,7 @@ public class DeployMojo extends StageMojo implements DeployConfiguration {
   }
 
   @Override
-  public boolean isStopPreviousVersion() {
+  public Boolean getStopPreviousVersion() {
     return stopPreviousVersion;
   }
 
