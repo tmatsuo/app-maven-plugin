@@ -28,6 +28,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
 /**
  * Abstract Mojo from which all goals inherit.
@@ -49,7 +50,10 @@ public abstract class CloudSdkMojo extends AbstractMojo {
     // ensure that the Cloud SDK is available
     if (cloudSdkPath == null) {
       try {
-        cloudSdkPath = PathResolver.INSTANCE.getCloudSdkPath().toFile();
+        Path sdkPath = PathResolver.INSTANCE.getCloudSdkPath();
+        if (sdkPath != null) {
+          cloudSdkPath = PathResolver.INSTANCE.getCloudSdkPath().toFile();
+        }
       } catch (FileNotFoundException e) {
         throw new MojoFailureException(
             "Cloud SDK Path was not provided, and cannot be automatically detected.", e);
