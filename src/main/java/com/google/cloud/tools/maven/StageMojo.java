@@ -57,7 +57,9 @@ public class StageMojo extends CloudSdkMojo implements StageStandardConfiguratio
    * The location of the dockerfile to use for App Engine flexible environment. This also applies to
    * App Engine Standard applications running on the flexible environment.
    */
-  @Parameter(alias = "stage.dockerfile", property = "app.stage.dockerfile")
+  @Parameter(
+      defaultValue = "${basedir}/src/main/appengine/Dockerfile",
+      alias = "stage.dockerfile", property = "app.stage.dockerfile")
   private File dockerfile;
 
   ///////////////////////////////////
