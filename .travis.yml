@@ -23,6 +23,7 @@ install:
     else
       export INCLUDE_REMOTE_TESTS=false
     fi
+  - export INCLUDE_REMOTE_TESTS=true
   - echo INCLUDE_REMOTE_TESTS = $INCLUDE_REMOTE_TESTS
   - |
     if $INCLUDE_REMOTE_TESTS; then
